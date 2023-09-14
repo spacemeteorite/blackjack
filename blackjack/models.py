@@ -88,7 +88,7 @@ class Player:
         ranks = [card.rank for card in self.cards]
         value = sum([VALUE_DICT[rank] for rank in ranks])
         if value > 21 and 'A' in ranks:
-            print('A occurrences', ranks.count('A'))
+            # print('A occurrences', ranks.count('A'))
             value -= 10
 
         return value   

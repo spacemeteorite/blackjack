@@ -78,7 +78,6 @@ class Presenter:
         
     def handle_double_down(self, event=None) -> None:
         self.player.draw(self.deck)
-        self.player.draw(self.deck)
         self.view.update_listbox_player_cards(self.player.cards)
         self.view.update_listbox_dealer_cards(self.dealer.cards)
         self.view.update_label_score(self.dealer.get_score(), self.player.get_score())

@@ -32,7 +32,7 @@ class App(tk.Tk):
 
 
         # window configuration
-        self.title('dude')
+        self.title('blackjack')
         self.resizable(width=True, height=False)
 
         # widgets creation
