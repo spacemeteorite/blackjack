@@ -49,13 +49,17 @@ class Player:
 
     def __init__(self):
         self.cards = []
-        self.total_point = 0 # value of cards
         self.money = 0 # current money of player 
 
 
     def __str__(self):
         cards_str = '[' + ', '.join([card.__repr__() for card in self.cards]) + ']'
         return cards_str
+
+
+    def init_draw(self, deck: Deck):
+        self.cards.append(deck.pop())
+        self.cards.append(deck.pop())
 
 
     def draw(self, deck: Deck):
@@ -65,7 +69,7 @@ class Player:
         return card
 
 
-    def score(self):
+    def get_score(self):
         value_dict = {'A': 11, 
                     '2': 2, 
                     '3': 3, 
@@ -95,20 +99,27 @@ class Dealer:
 
     def __init__(self):
         self.cards = []
-        self.total_point = 0 # value of cards in a round
 
 
     def __str__(self):
         cards_str = '[' + ', '.join([card.__repr__() for card in self.cards]) + ']'
         return cards_str
     
-
-    def draw(self, deck: Deck):
-        # Dealer draw card until self.total_point >= 17
+    
+    def init_draw(self, deck: Deck):
+        self.cards.append(deck.pop())
         self.cards.append(deck.pop())
 
 
-    def score(self):
+    def draw(self, deck: Deck):
+        # Dealer draw card until self.total_point >= 17
+        while self.get_score() < 17:
+            self.cards.append(deck.pop())
+            print(self.cards)
+            print(self.get_score())
+
+
+    def get_score(self):
         value_dict = {'A': 11, 
                     '2': 2, 
                     '3': 3, 

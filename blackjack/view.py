@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from typing import Protocol
 
 
@@ -42,10 +42,11 @@ class App(tk.Tk):
         self.label_dealer_score = ttk.Label(self.frame_dealer, textvariable=self.variables['dealer_score'])
 
         self.frame_options = ttk.Frame(self.frame_table, relief='solid', borderwidth=5, width=300, height=100)
-        self.btn_hit = ttk.Button(self.frame_options, text='Hit')
-        self.btn_double_down = ttk.Button(self.frame_options, text='Double Down')
-        self.btn_stand = ttk.Button(self.frame_options, text='Stand')
-        self.btn_surrender = ttk.Button(self.frame_options, text='Surrender')
+        self.btn_hit = ttk.Button(self.frame_options, text='Hit', command=presenter.handle_hit)
+        self.btn_double_down = ttk.Button(self.frame_options, text='Double Down', command=presenter.handle_double_down)
+        self.btn_stand = ttk.Button(self.frame_options, text='Stand', command=presenter.handle_stand)
+        self.btn_surrender = ttk.Button(self.frame_options, text='Surrender', command=presenter.handle_surrender)
+        self.btn_new_round = ttk.Button(self.frame_options, text="Start New", command=presenter.init_game)
 
         self.frame_player = ttk.Frame(self.frame_table, relief='solid', borderwidth=5, width=300, height=200)
         self.label_player = ttk.Label(self.frame_player, text='Player')
@@ -67,6 +68,7 @@ class App(tk.Tk):
         self.btn_double_down.grid(row=0, column=1)
         self.btn_stand.grid(row=0, column=2)
         self.btn_surrender.grid(row=0, column=3)
+        self.btn_new_round.grid(row=0, column=4)
 
         self.frame_player.grid(row=2, column=0, rowspan=1, columnspan=1)
         self.label_player.grid()
@@ -75,11 +77,62 @@ class App(tk.Tk):
 
         self.frame_deck.grid(row=0, column=1, rowspan=3, columnspan=1)
 
-        # event binding
-        self.btn_hit.bind("<Button-1>", presenter.handle_hit)
-        self.btn_stand.bind("<Button-1>", presenter.handle_stand)
-        self.btn_double_down.bind("<Button-1>", presenter.handle_double_down)
-        self.btn_surrender.bind("<Button-1>", presenter.handle_surrender)
+        # event binding (if you disable a button, bind will still work... so you better use command instead of bind)
+        # self.btn_hit.bind("<Button-1>", presenter.handle_hit)
+        # self.btn_stand.bind("<Button-1>", presenter.handle_stand)
+        # self.btn_double_down.bind("<Button-1>", presenter.handle_double_down)
+        # self.btn_surrender.bind("<Button-1>", presenter.handle_surrender)
+
+
+    def update_label_score(self, dealer_score: int, player_score: int) -> None:
+        self.variables['dealer_score'].set(dealer_score)
+        self.variables['player_score'].set(player_score)
+
+
+    def update_listbox_cards(self, dealer_cards: list, player_cards: list) -> None:
+        '''dealer_cards format: [Card('rank', 'suit'), ...]'''
+        self.listbox_dealer_cards.delete(0, tk.END)
+        self.listbox_player_cards.delete(0, tk.END)
+        for dealer_card in dealer_cards:
+            self.listbox_dealer_cards.insert(0, str(dealer_card))
+        for player_card in player_cards:
+            self.listbox_player_cards.insert(0, str(player_card))
+
+
+
+
+    def messagebox_round_win(self, player_score, dealer_score):
+        '''round end with draw, no one wins'''
+        messagebox.showinfo('win', f'you win!\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_lose(self, player_score, dealer_score):
+        '''player lose'''
+        messagebox.showinfo('lose', f'lose all bet\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_draw(self, player_score, dealer_score):
+        '''round end with draw, no one wins'''
+        messagebox.showinfo('draw', f'no one wins!\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_blackjack(self, player_score, dealer_score):
+        '''player blackjack, win the game'''
+        messagebox.showinfo('blackjack!', f'you win\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_bust(self, player_score, dealer_score):
+        '''player bust, lose the game'''
+        messagebox.showinfo('bust!', f'you lose\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_dealer_bust(self, player_score, dealer_score):
+        '''dealer bust, you win the game'''
+        messagebox.showinfo('dealer bust!', f'you win!\nplayer:{player_score} dealer:{dealer_score}')
+
+
+    def messagebox_round_surrender(self):
+        messagebox.showinfo('surrender', 'player surrender, get half bet back.')
 
 
 if __name__ == "__main__":

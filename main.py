@@ -4,5 +4,5 @@ from blackjack.presenter import Presenter
 
 
 
-mypresenter = Presenter(App, Deck, Player, Dealer)
+mypresenter = Presenter(App)
 mypresenter.run()
