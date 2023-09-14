@@ -6,6 +6,22 @@ from random import shuffle
 Card = namedtuple('Card', ['rank', 'suit'])
 
 
+VALUE_DICT = {'A': 11, 
+            '2': 2, 
+            '3': 3, 
+            '4': 4, 
+            '5': 5, 
+            '6': 6,
+            '7': 7,
+            '8': 8,
+            '9': 9,
+            '10': 10,
+            'J': 10,
+            'Q': 10,
+            'K': 10,
+            }
+
+
 
 class Deck:
     
@@ -70,7 +86,7 @@ class Player:
 
 
     def get_score(self):
-        value_dict = {'A': 11, 
+        VALUE_DICT = {'A': 11, 
                     '2': 2, 
                     '3': 3, 
                     '4': 4, 
@@ -85,7 +101,7 @@ class Player:
                     'K': 10,
                     }
         ranks = [card.rank for card in self.cards]
-        value = sum([value_dict[rank] for rank in ranks])
+        value = sum([VALUE_DICT[rank] for rank in ranks])
         if value > 21 and 'A' in ranks:
             print('A occurrences', ranks.count('A'))
             value -= 10
@@ -120,22 +136,8 @@ class Dealer:
 
 
     def get_score(self):
-        value_dict = {'A': 11, 
-                    '2': 2, 
-                    '3': 3, 
-                    '4': 4, 
-                    '5': 5, 
-                    '6': 6,
-                    '7': 7,
-                    '8': 8,
-                    '9': 9,
-                    '10': 10,
-                    'J': 10,
-                    'Q': 10,
-                    'K': 10,
-                    }
         ranks = [card.rank for card in self.cards]
-        value = sum([value_dict[rank] for rank in ranks])
+        value = sum([VALUE_DICT[rank] for rank in ranks])
         if value > 21 and 'A' in ranks:
             print('A occurrences', ranks.count('A'))
             value -= 10

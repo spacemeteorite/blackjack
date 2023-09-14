@@ -1,5 +1,5 @@
 from typing import Protocol
-from .models import Deck, Player, Dealer
+from .models import Deck, Player, Dealer, VALUE_DICT
 
 
 
@@ -14,7 +14,10 @@ class Presenter:
 
     def __init__(self, view: View):
         self.view = view(self)
-
+        self.view.btn_hit['state'] = 'disabled'
+        self.view.btn_double_down['state'] = 'disabled'
+        self.view.btn_stand['state'] = 'disabled'
+        self.view.btn_surrender['state'] = 'disabled'
 
     def init_game(self):
         self.deck = Deck()
@@ -30,14 +33,16 @@ class Presenter:
         self.view.btn_double_down['state'] = 'enable'
         self.view.btn_stand['state'] = 'enable'
         self.view.btn_surrender['state'] = 'enable'
-        self.view.listbox_player_cards.delete(0, -1)
-        self.view.listbox_dealer_cards.delete(0, -1)
 
         # dealer and player each draw 2 cards
         self.dealer.init_draw(self.deck)
         self.player.init_draw(self.deck)
-        self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
-        self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
+        self.view.init_listbox_dealer_cards(self.dealer.cards[0])
+
+        self.view.update_listbox_player_cards(self.player.cards)
+        self.view.update_label_player_score(self.player.get_score())
+
+        self.view.update_label_dealer_score(VALUE_DICT[self.dealer.cards[0].rank]) # only show value of dealer's first card
 
         # check if player blackjack at start
         if self.player.get_score() == 21:
@@ -46,8 +51,8 @@ class Presenter:
 
     def handle_hit(self, event=None) -> None:
         self.player.draw(self.deck)
-        self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
-        self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
+        self.view.update_listbox_player_cards(self.player.cards)
+        self.view.update_label_player_score(self.player.get_score())
 
         self.view.btn_double_down['state'] = 'disabled'
         self.view.btn_surrender['state'] = 'disabled'
@@ -59,12 +64,16 @@ class Presenter:
             self.view.btn_double_down['state'] = 'disabled'
             self.view.btn_stand['state'] = 'disabled'
             self.view.btn_surrender['state'] = 'disabled'
+            self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
+            self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
         elif player_score == 21:
             self.view.messagebox_round_blackjack(self.player.get_score(), self.dealer.get_score())
             self.view.btn_hit['state'] = 'disabled'
             self.view.btn_double_down['state'] = 'disabled'
             self.view.btn_stand['state'] = 'disabled'
             self.view.btn_surrender['state'] = 'disabled'
+            self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
+            self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
         elif player_score < 21:
             pass
          
@@ -72,7 +81,8 @@ class Presenter:
     def handle_double_down(self, event=None) -> None:
         self.player.draw(self.deck)
         self.player.draw(self.deck)
-        self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
+        self.view.update_listbox_player_cards(self.player.cards)
+        self.view.update_listbox_dealer_cards(self.dealer.cards)
         self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
 
         self.view.btn_hit['state'] = 'disabled'
@@ -104,6 +114,7 @@ class Presenter:
         # dealer logic
         self.dealer.draw(self.deck)
         self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
+        self.view.update_label_score(self.dealer.get_score(), self.player.get_score())
 
         if self.dealer.get_score() > 21:
             self.view.messagebox_round_dealer_bust(self.player.get_score(), self.dealer.get_score())

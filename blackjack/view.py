@@ -25,8 +25,8 @@ class App(tk.Tk):
 
         # variables
         self.variables = {
-            'dealer_score': tk.IntVar(),
-            'player_score': tk.IntVar(),
+            'dealer_score': tk.StringVar(),
+            'player_score': tk.StringVar(),
         }
 
 
@@ -84,8 +84,27 @@ class App(tk.Tk):
         # self.btn_surrender.bind("<Button-1>", presenter.handle_surrender)
 
 
+    def init_listbox_dealer_cards(self, faceup_card):
+        '''
+        faceup_card = Card('rank', 'suit')
+        according to blackjack rule, the first card of dealer is face up,
+        and the second card of dealer is face down. 
+        '''
+        self.listbox_dealer_cards.delete(0, tk.END)
+        self.listbox_dealer_cards.insert(0, str(faceup_card))
+        self.listbox_dealer_cards.insert(0, 'face down card')
+
+
     def update_label_score(self, dealer_score: int, player_score: int) -> None:
         self.variables['dealer_score'].set(dealer_score)
+        self.variables['player_score'].set(player_score)
+
+
+    def update_label_dealer_score(self, dealer_score: int) -> None:
+        self.variables['dealer_score'].set(dealer_score)
+
+
+    def update_label_player_score(self, player_score: int) -> None:
         self.variables['player_score'].set(player_score)
 
 
@@ -99,6 +118,18 @@ class App(tk.Tk):
             self.listbox_player_cards.insert(0, str(player_card))
 
 
+    def update_listbox_player_cards(self, player_cards: list) -> None:
+        '''player_cards: [Card('rank', 'suit') ,...]'''
+        self.listbox_player_cards.delete(0, tk.END)
+        for player_card in player_cards:
+            self.listbox_player_cards.insert(0, str(player_card))
+
+
+    def update_listbox_dealer_cards(self, dealer_cards: list) -> None:
+        '''dealer_cards: [Card('rank', 'suit') ,...]'''
+        self.listbox_dealer_cards.delete(0, tk.END)
+        for dealer_card in dealer_cards:
+            self.listbox_dealer_cards.insert(0, str(dealer_card))
 
 
     def messagebox_round_win(self, player_score, dealer_score):
