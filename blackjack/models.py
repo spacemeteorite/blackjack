@@ -65,7 +65,6 @@ class Player:
 
     def __init__(self):
         self.cards = []
-        self.money = 0 # current money of player 
 
 
     def __str__(self):
@@ -86,20 +85,6 @@ class Player:
 
 
     def get_score(self):
-        VALUE_DICT = {'A': 11, 
-                    '2': 2, 
-                    '3': 3, 
-                    '4': 4, 
-                    '5': 5, 
-                    '6': 6,
-                    '7': 7,
-                    '8': 8,
-                    '9': 9,
-                    '10': 10,
-                    'J': 10,
-                    'Q': 10,
-                    'K': 10,
-                    }
         ranks = [card.rank for card in self.cards]
         value = sum([VALUE_DICT[rank] for rank in ranks])
         if value > 21 and 'A' in ranks:
