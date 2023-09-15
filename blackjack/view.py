@@ -25,10 +25,11 @@ class App(tk.Tk):
 
         # variables
         self.variables = {
-            'dealer_score': tk.StringVar(),
-            'player_score': tk.StringVar(),
-            'player_money': tk.StringVar(),
-            'current_bet': tk.StringVar(),
+            'dealer_score': tk.IntVar(),
+            'player_score': tk.IntVar(),
+            'player_money': tk.IntVar(),
+            'current_bet': tk.IntVar(),
+            'potential_bonus': tk.IntVar(),
         }
 
 
@@ -60,6 +61,7 @@ class App(tk.Tk):
         self.frame_info = ttk.LabelFrame(self, text='INFO', relief='solid', borderwidth=5)
         self.label_player_money = LabeledInfo(self.frame_info, label_text='money: ', textvariable=self.variables['player_money'])
         self.label_current_bet = LabeledInfo(self.frame_info, label_text='current bet: ', textvariable=self.variables['current_bet'])
+        self.label_potential_bonus = LabeledInfo(self.frame_info, label_text='potential bonus: ', textvariable=self.variables['potential_bonus'])
         self.tutorial_str = """
 100$ for one bet, surrender 
 to get 50$ back, double down 
@@ -99,7 +101,8 @@ but win twice back.
         self.frame_info.grid(row=0, column=1,sticky='wnes')
         self.label_player_money.grid(row=0, pady=10)
         self.label_current_bet.grid(row=1, pady=10)
-        self.label_tutorial.grid(row=2)
+        self.label_potential_bonus.grid(row=2, pady=10)
+        self.label_tutorial.grid(row=3)
 
         # event binding (if you disable a button, bind will still work... so you better use command instead of bind)
         # self.btn_hit.bind("<Button-1>", presenter.handle_hit)
@@ -167,38 +170,15 @@ but win twice back.
             self.listbox_dealer_cards.insert(0, str(dealer_card))
 
 
-    def messagebox_round_win(self, player_score, dealer_score):
-        '''round end with draw, no one wins'''
-        messagebox.showinfo('win', f'you win!\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_lose(self, player_score, dealer_score):
-        '''player lose'''
-        messagebox.showinfo('lose', f'lose all bet\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_draw(self, player_score, dealer_score):
-        '''round end with draw, no one wins'''
-        messagebox.showinfo('draw', f'no one wins!\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_blackjack(self, player_score, dealer_score):
-        '''player blackjack, win the game'''
-        messagebox.showinfo('blackjack!', f'you win\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_bust(self, player_score, dealer_score):
-        '''player bust, lose the game'''
-        messagebox.showinfo('bust!', f'you lose\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_dealer_bust(self, player_score, dealer_score):
-        '''dealer bust, you win the game'''
-        messagebox.showinfo('dealer bust!', f'you win!\nplayer:{player_score} dealer:{dealer_score}')
-
-
-    def messagebox_round_surrender(self):
-        messagebox.showinfo('surrender', 'player surrender, get half bet back.')
+    def messagebox_round_end(self, result: str, dealer_score, player_score, total_bet=0, money_change=0):
+        info_str = f"""
+-- <{result}> --
+dealer: {dealer_score}
+player: {player_score}
+total bet: {total_bet}
+money change: {money_change}
+"""
+        messagebox.showinfo('result', info_str)
 
 
 if __name__ == "__main__":
