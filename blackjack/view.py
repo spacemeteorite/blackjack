@@ -28,6 +28,7 @@ class App(tk.Tk):
             'dealer_score': tk.StringVar(),
             'player_score': tk.StringVar(),
             'player_money': tk.StringVar(),
+            'current_bet': tk.StringVar(),
         }
 
 
@@ -58,6 +59,7 @@ class App(tk.Tk):
 
         self.frame_info = ttk.LabelFrame(self, text='INFO', relief='solid', borderwidth=5)
         self.label_player_money = LabeledInfo(self.frame_info, label_text='money: ', textvariable=self.variables['player_money'])
+        self.label_current_bet = LabeledInfo(self.frame_info, label_text='current bet: ', textvariable=self.variables['current_bet'])
         self.tutorial_str = """
 100$ for one bet, surrender 
 to get 50$ back, double down 
@@ -96,7 +98,8 @@ but win twice back.
 
         self.frame_info.grid(row=0, column=1,sticky='wnes')
         self.label_player_money.grid(row=0, pady=10)
-        self.label_tutorial.grid(row=1)
+        self.label_current_bet.grid(row=1, pady=10)
+        self.label_tutorial.grid(row=2)
 
         # event binding (if you disable a button, bind will still work... so you better use command instead of bind)
         # self.btn_hit.bind("<Button-1>", presenter.handle_hit)

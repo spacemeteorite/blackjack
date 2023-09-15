@@ -49,6 +49,7 @@ class Presenter:
         # check if player blackjack at start
         if self.player.get_score() == 21:
             self.view.messagebox_round_blackjack(self.player.get_score(), self.dealer.get_score())
+            self.view.disable_options()
             self.change_player_money(2*self.bet)
 
     def handle_hit(self, event=None) -> None:
@@ -110,14 +111,15 @@ class Presenter:
     def dealer_logic(self, flag_double_down = False) -> None:
         '''after all drawing completed, this is the final score checker'''
         self.dealer.draw(self.deck)
+
+        player_score = self.player.get_score()
+        dealer_score = self.dealer.get_score()
         self.view.update_listbox_cards(self.dealer.cards, self.player.cards)
+        self.view.update_label_score(dealer_score=dealer_score, player_score=player_score)
+
         if self.dealer.get_score() > 21:
             self.view.messagebox_round_dealer_bust(self.player.get_score(), self.dealer.get_score())
         elif self.dealer.get_score() <= 21:
-            player_score = self.player.get_score()
-            dealer_score = self.dealer.get_score()
-            self.view.update_label_score(dealer_score=dealer_score, player_score=player_score)
-
             if player_score == dealer_score:
                 self.view.messagebox_round_draw(self.player.get_score(), self.dealer.get_score())
                 self.change_player_money(2 * self.bet) if flag_double_down else self.change_player_money(self.bet) # get bet back if draw
@@ -128,9 +130,11 @@ class Presenter:
                 self.view.messagebox_round_lose(self.player.get_score(), self.dealer.get_score())
 
 
+
     def change_player_money(self, money_change: int) -> None:
         self.player_money += money_change
         self.view.variables['player_money'].set(self.player_money)
+        self.view.variables['current_bet'].set(self.bet)
 
 
     def run(self) -> None:
